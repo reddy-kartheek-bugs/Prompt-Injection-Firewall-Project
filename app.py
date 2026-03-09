@@ -42,7 +42,7 @@ if st.button("Analyze Prompt"):
 
     sanitized = sanitize_prompt(prompt)
 
-    log_attack(prompt,risk)
+    log_attack(prompt, risk, rule_threats)
 
     col1,col2,col3 = st.columns(3)
 
