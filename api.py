@@ -21,6 +21,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+import re
+
 class PromptRequest(BaseModel):
     prompt: str
 
@@ -34,7 +36,14 @@ def analyze(request: PromptRequest):
     risk = calculate_risk(rule_threats, llm_result)
     sanitized = sanitize_prompt(prompt)
     
-    log_attack(prompt, risk, rule_threats)
+    combined_threats = list(rule_threats)
+    match = re.search(r"Attack_Type:\s*(.*)", llm_result, re.IGNORECASE)
+    if match:
+        attack_type = match.group(1).strip()
+        if attack_type and attack_type.lower() not in ["none", "n/a", "unknown", "safe"]:
+            combined_threats.append(attack_type)
+            
+    log_attack(prompt, risk, combined_threats)
     
     return {
         "rule_threats": rule_threats,

@@ -55,23 +55,21 @@ function App() {
   }
 
   const radarData = [
-    { subject: 'Prompt Inject', A: 0, fullMark: 10 },
+    { subject: 'Prompt Injection', A: 0, fullMark: 10 },
     { subject: 'Jailbreak', A: 0, fullMark: 10 },
     { subject: 'Exfiltration', A: 0, fullMark: 10 },
-    { subject: 'Cybercrime', A: 0, fullMark: 10 },
+    { subject: 'Illegal Activity', A: 0, fullMark: 10 },
   ]
 
   logs.forEach(log => {
       (log.threats || []).forEach(threat => {
-          const t = threat.toLowerCase();
-          let matched = false;
-          radarData.forEach(d => {
-            if (t.includes(d.subject.toLowerCase().split(' ')[0])) {
-              d.A += 1;
-              matched = true;
-            }
-          })
-          if(!matched && t.includes('injection')) radarData[0].A += 1;
+          const t = String(threat).toLowerCase();
+          if (t.includes('injection')) radarData[0].A += 1;
+          else if (t.includes('jailbreak')) radarData[1].A += 1;
+          else if (t.includes('exfiltration')) radarData[2].A += 1;
+          else if (t.includes('illegal') || t.includes('cybercrime')) radarData[3].A += 1;
+          // fallback
+          else radarData[0].A += 1; 
       })
   })
 
